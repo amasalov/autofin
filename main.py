@@ -1,7 +1,7 @@
 
 import json
 import csv
-import sys
+
 
 
 def main():
@@ -11,7 +11,7 @@ def main():
         data = json.load(json_file)
 
         list = []
-        normolized_list = []
+        norm_list = []
         normolized_msg = {}
         del data['name']
         del data['type']
@@ -20,11 +20,18 @@ def main():
         list = data["messages"]
         
         for i in range (len(list)):
-            normolized_msg = {}
-            normolized_msg['date'] = list[i]['date']
-            normolized_msg['from'] = list[i]['from']
-            normolized_msg['text'] = list[i]['text_entities'][0] #need to make a loop and stich a string
-            normolized_list.append(normolized_msg)
+            norm_msg = {}
+            norm_msg['date'] = list[i]['date'].split('T')[0] #need to remove time, just keep the date or get the date from unixtimestamp
+           
+            norm_msg['from'] = list[i]['from']
+            #normolized_msg['text'] = list[i]['text_entities'][0]['text'] #need to make a loop and stich a string
+            norm_text = ""
+            print("list[i]['text_entities']",list[i]['text_entities'])
+            for t in list[i]['text_entities']:
+                norm_text += t['text']
+                print(norm_text)
+            norm_msg['text'] = norm_text
+            norm_list.append(norm_msg)
 
         
 
@@ -32,7 +39,8 @@ def main():
         #try converting telegram json to one level dict, so i can save as csv
 
     #print(type(data))
-    print(normolized_list)
+    print(norm_list)
+    return(norm_list)
 
    #save this json as is in csv
 
