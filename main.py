@@ -1,13 +1,20 @@
 
 import json
 import csv
+from script import return_number
+
+# [ ] assign #hashtags based on hashtags
+# [ ] if several numbers in string should be two different rows and hashtag #split
+# [ ] assign #hashtags based on text 
+
+#return_first_int_from_string
 
 
 
 def main():
     print("---telegram json converter to csv for Family Finance channel---")
     # Opening JSON file
-    with open("./sept1-sept2.json") as json_file:
+    with open("sept01-sept30.json") as json_file:
         data = json.load(json_file)
 
         list = []
@@ -21,25 +28,31 @@ def main():
         
         for i in range (len(list)):
             norm_msg = {}
-            norm_msg['date'] = list[i]['date'].split('T')[0] #need to remove time, just keep the date or get the date from unixtimestamp
-           
-            norm_msg['from'] = list[i]['from']
-            #normolized_msg['text'] = list[i]['text_entities'][0]['text'] #need to make a loop and stich a string
-            norm_text = ""
-            print("list[i]['text_entities']",list[i]['text_entities'])
-            for t in list[i]['text_entities']:
-                norm_text += t['text']
-                print(norm_text)
-            norm_msg['text'] = norm_text
-            norm_list.append(norm_msg)
+            if(list[i]['type'] == "message"):
+                norm_msg['id'] = list[i]['id']
+                norm_msg['date'] = list[i]['date'].split('T')[0]
+                norm_msg['from'] = list[i]['from']
+                norm_text = ""
+                #print("list[i]['text_entities']",list[i]['text_entities'])
+                for t in list[i]['text_entities']:
+                    norm_text += t['text']
+                
+                norm_msg['text'] = norm_text
+                print(norm_msg['date'], norm_msg['text'])
+                norm_msg['sum'] = 0
+                norm_msg['sum'] = return_number(norm_text)
+                print("sum", norm_msg['sum'])
+                #take first integer in text and assign it's value to norm_msg['sum']. If more numbers in text that need to create a special #hashtag split
+                norm_msg['hashtag'] = ""
+                norm_list.append(norm_msg)
 
         
 
 
-        #try converting telegram json to one level dict, so i can save as csv
+        
 
-    #print(type(data))
-    print(norm_list)
+
+    #print(norm_list)
     return(norm_list)
 
    #save this json as is in csv
